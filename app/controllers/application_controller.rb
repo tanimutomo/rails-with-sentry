@@ -18,27 +18,35 @@ class ApplicationController < ActionController::API
   rescue_from ActionController::Forbidden, with: :error403
   rescue_from ActionController::RoutingError, with: :error404
 
+  # rescue_from Exception, with: :report 
+
   def error500(err)
+    report(err)
     render json: { error: err.message }, status: :internal_server_error
   end
 
   def error422(err)
+    report(err)
     render json: { error: err.message }, status: :unprocessable_entity
   end
 
   def error404(err)
+    report(err)
     render json: { error: err.message }, status: :not_found
   end
 
   def error403(err)
+    report(err)
     render json: { error: err.message }, status: :forbidden
   end
 
   def error401(err)
+    report(err)
     render json: { error: err.message }, status: :unauthorized
   end
 
   def error400(err)
+    report(err)
     render json: { error: err.message }, status: :bad_request
   end
 
@@ -47,5 +55,9 @@ class ApplicationController < ActionController::API
   def set_raven_context
     Raven.user_context(id: 1) # or anything else in session
     Raven.extra_context(params: params.to_unsafe_h, url: request.url)
+  end
+
+  def report(err)
+    Raven.capture_exception(err)
   end
 end
