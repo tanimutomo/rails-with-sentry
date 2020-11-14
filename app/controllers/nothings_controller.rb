@@ -2,23 +2,22 @@
 
 class NothingsController < ApplicationController
   def index
-    raise StandardError, 'raise in :index'
+    raise StandardError.new('raise in :index')
   end
 
   def show
-    binding.pry
-    raise ActionController::InvalidAuthenticityToken 'raise in :show'
+    raise ActionController::InvalidAuthenticityToken.new('raise in :show')
   end
 
   def create
-    raise ActionController::BadRequest 'raise in :create'
+    raise ActionController::BadRequest.new('raise in :create')
   end
 
   def update
-    raise ActionController::ParameterMissing 'raise in :update'
+    raise ActionController::ParameterMissing.new('raise in :update')
   end
 
   def destroy
-    raise ActionController::Forbidden 'raise in :destroy'
+    raise ActionController::Forbidden.new('raise in :destroy')
   end
 end
