@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
+  before_action :set_raven_context
+
   include ActionController::HttpAuthentication::Token::ControllerMethods
   class ActionController::Forbidden < ActionController::ActionControllerError; end
 
@@ -38,5 +40,12 @@ class ApplicationController < ActionController::API
 
   def error400(err)
     render json: { error: err.message }, status: :bad_request
+  end
+
+  private
+
+  def set_raven_context
+    Raven.user_context(id: 1) # or anything else in session
+    Raven.extra_context(params: params.to_unsafe_h, url: request.url)
   end
 end
